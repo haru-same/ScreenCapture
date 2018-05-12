@@ -46,10 +46,18 @@ namespace ScreenCapture
         static void Main(string[] args)
         {
             var pName = "ed6_win3_DX9";
-            Process p;
+            Process p = null;
             try
             {
-                p = Process.GetProcessesByName(pName)[0];
+                var processes = Process.GetProcessesByName(pName);
+                foreach (var proc in processes)
+                {
+                    if (proc.MainWindowHandle != IntPtr.Zero)
+                    {
+                        p = proc;
+                        break;
+                    }
+                }
             }
             catch
             {
@@ -63,17 +71,22 @@ namespace ScreenCapture
 
             PrintScreen ps = new PrintScreen();
 
+            //Console.WriteLine(FindWindow.GetProcessWindows(p.Id)[0]);
             var img = new Bitmap(ps.CaptureWindow(p.MainWindowHandle));
+
             var uglyBorderSize = 3;
-            var barHeight = uglyBorderSize;
-            var lastColor = img.GetPixel(uglyBorderSize, uglyBorderSize);
-            var color = lastColor;
-            do
-            {
-                lastColor = color;
-                barHeight++;
-                color = img.GetPixel(uglyBorderSize, barHeight);
-            } while (color == lastColor);
+            var barHeight = uglyBorderSize + 24;
+
+            //var uglyBorderSize = 3;
+            //var barHeight = uglyBorderSize;
+            //var lastColor = img.GetPixel(uglyBorderSize, uglyBorderSize);
+            //var color = lastColor;
+            //do
+            //{
+            //    lastColor = color;
+            //    barHeight++;
+            //    color = img.GetPixel(uglyBorderSize, barHeight);
+            //} while (color == lastColor);
 
             var cropped = img.Clone(new Rectangle(uglyBorderSize, barHeight, img.Width - 2 * uglyBorderSize, img.Height - barHeight - uglyBorderSize), PixelFormat.DontCare);
 
