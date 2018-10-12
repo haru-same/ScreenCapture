@@ -45,8 +45,27 @@ namespace ScreenCapture
 
         static void Main(string[] args)
         {
+            var gameArg = "";
+            if (args.Length > 0) gameArg = args[0];
+    
             var pName = "ed6_win3_DX9";
+            switch (gameArg)
+            {
+                case "ed6t3":
+                    pName = "ed6_win3_DX9";
+                    break;
+                case "ed7z":
+                    pName = "ED_ZERO";
+                    break;
+            }
             Process p = null;
+
+            //foreach (var proc in Process.GetProcesses())
+            //{
+            //    Console.WriteLine(proc.ProcessName);
+            //}
+            //Console.ReadLine();
+
             try
             {
                 var processes = Process.GetProcessesByName(pName);
