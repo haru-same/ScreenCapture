@@ -48,23 +48,32 @@ namespace ScreenCapture
             var gameArg = "";
             if (args.Length > 0) gameArg = args[0];
     
-            var pName = "ed6_win3_DX9";
+            //var pName = "ed6_win3_DX9";
+            var pName = "ff9";
+            var uglyBorderSize = 4;
+            var barHeight = 26;
+            var sideTrim = 0;
             switch (gameArg)
             {
                 case "ed6t3":
                     pName = "ed6_win3_DX9";
+                    uglyBorderSize = 3;
+                    barHeight = uglyBorderSize + 24;
                     break;
                 case "ed7z":
                     pName = "ED_ZERO";
+                    uglyBorderSize = 3;
+                    barHeight = uglyBorderSize + 24;
+                    break;
+                case "ff9":
+                    sideTrim = 190;
+                    break;
+                default:
+                    if (args.Length > 1)
+                        pName = args[1];
                     break;
             }
             Process p = null;
-
-            //foreach (var proc in Process.GetProcesses())
-            //{
-            //    Console.WriteLine(proc.ProcessName);
-            //}
-            //Console.ReadLine();
 
             try
             {
@@ -90,11 +99,16 @@ namespace ScreenCapture
 
             PrintScreen ps = new PrintScreen();
 
+            if (p == null)
+            {
+                foreach (var proc in Process.GetProcesses())
+                {
+                    Console.WriteLine(proc.ProcessName);
+                }
+            }
+
             //Console.WriteLine(FindWindow.GetProcessWindows(p.Id)[0]);
             var img = new Bitmap(ps.CaptureWindow(p.MainWindowHandle));
-
-            var uglyBorderSize = 3;
-            var barHeight = uglyBorderSize + 24;
 
             //var uglyBorderSize = 3;
             //var barHeight = uglyBorderSize;
@@ -107,7 +121,7 @@ namespace ScreenCapture
             //    color = img.GetPixel(uglyBorderSize, barHeight);
             //} while (color == lastColor);
 
-            var cropped = img.Clone(new Rectangle(uglyBorderSize, barHeight, img.Width - 2 * uglyBorderSize, img.Height - barHeight - uglyBorderSize), PixelFormat.DontCare);
+            var cropped = img.Clone(new Rectangle(uglyBorderSize + sideTrim, barHeight, img.Width - 2 * (uglyBorderSize + sideTrim), img.Height - barHeight - uglyBorderSize), PixelFormat.DontCare);
 
             //RollbackImages();
 
